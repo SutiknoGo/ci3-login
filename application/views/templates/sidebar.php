@@ -12,42 +12,61 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Administrator
-    </div>
+    <!-- QUERY MENU -->
+    <?php
+    $role_id = $this->session->userdata('role_id');
+    $queryMenu = "SELECT `user_menu`.`id`, `menu`
+                            FROM `user_menu` JOIN `user_access_menu`
+                              ON `user_menu`.`id` = `user_access_menu`.`menu_id`
+                           WHERE `user_access_menu`.`role_id` = $role_id
+                        ORDER BY `user_access_menu`.`menu_id` ASC
+                        ";
+    $menu = $this->db->query($queryMenu)->result_array();
+    ?>
 
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item">
-        <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
-    </li>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
+    <!-- LOOPING MENU -->
+    <?php foreach ($menu as $m) : ?>
+        <div class="sidebar-heading">
+            <?= $m['menu']; ?>
+        </div>
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        User
-    </div>
+        <!-- SIAPKAN SUB-MENU SESUAI MENU -->
+        <?php
+        $menuId = $m['id'];
+        $querySubMenu = "SELECT *
+                               FROM `user_sub_menu`
+                              WHERE `user_sub_menu`.`menu_id` = $menuId
+                                AND `is_active` = 1
+                        ";
+        $subMenu = $this->db->query($querySubMenu)->result_array();
+        ?>
 
-    <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-            <i class="fas fa-fw fa-user"></i>
-            <span>My Profile</span></a>
-    </li>
+        <?php foreach ($subMenu as $sm) : ?>
+            <?php if ($title == $sm['title']) : ?>
+                <li class="nav-item active">
+                <?php else : ?>
+                <li class="nav-item">
+                <?php endif; ?>
+                <a class="nav-link pb-0" href="<?= base_url($sm['url']); ?>">
+                    <i class="<?= $sm['icon']; ?>"></i>
+                    <span><?= $sm['title']; ?></span></a>
+                </li>
+            <?php endforeach; ?>
 
-    <hr class="sidebar-divider">
+            <hr class="sidebar-divider mt-3">
 
-    <li class="nav-item">
-        <a class="nav-link" href="<?= base_url('auth/logout'); ?>">
-            <i class="fas fa-fw fa-sign-out-alt"></i>
-            <span>Logout</span></a>
-    </li>
+        <?php endforeach; ?>
 
-    <!-- Nav Item - Pages Collapse Menu -->
-    <!-- <li class="nav-item">
+
+        <li class="nav-item">
+            <a class="nav-link" href="<?= base_url('auth/logout'); ?>">
+                <i class="fas fa-fw fa-sign-out-alt"></i>
+                <span>Logout</span></a>
+        </li>
+
+        <!-- Nav Item - Pages Collapse Menu -->
+        <!-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Components</span>
@@ -61,8 +80,8 @@
                 </div>
             </li> -->
 
-    <!-- Nav Item - Utilities Collapse Menu -->
-    <!-- <li class="nav-item">
+        <!-- Nav Item - Utilities Collapse Menu -->
+        <!-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-fw fa-wrench"></i>
                     <span>Utilities</span>
@@ -78,16 +97,16 @@
                 </div>
             </li> -->
 
-    <!-- Divider -->
-    <!-- <hr class="sidebar-divider"> -->
+        <!-- Divider -->
+        <!-- <hr class="sidebar-divider"> -->
 
-    <!-- Heading -->
-    <!-- <div class="sidebar-heading">
+        <!-- Heading -->
+        <!-- <div class="sidebar-heading">
                 Addons
             </div> -->
 
-    <!-- Nav Item - Pages Collapse Menu -->
-    <!-- <li class="nav-item active">
+        <!-- Nav Item - Pages Collapse Menu -->
+        <!-- <li class="nav-item active">
                 <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Pages</span>
@@ -106,27 +125,27 @@
                 </div>
             </li> -->
 
-    <!-- Nav Item - Charts -->
-    <!-- <li class="nav-item">
+        <!-- Nav Item - Charts -->
+        <!-- <li class="nav-item">
                 <a class="nav-link" href="charts.html">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Charts</span></a>
             </li> -->
 
-    <!-- Nav Item - Tables -->
-    <!-- <li class="nav-item">
+        <!-- Nav Item - Tables -->
+        <!-- <li class="nav-item">
                 <a class="nav-link" href="tables.html">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tables</span></a>
             </li> -->
 
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
 
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div>
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
 
 </ul>
 <!-- End of Sidebar -->
