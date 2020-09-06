@@ -6,7 +6,7 @@ class Admin extends CI_Controller
     public function index()
     {
 
-        $data['title'] = 'Admin Profile';
+        $data['title'] = 'Dashboard';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         // echo 'Hello ' . $data['user']['name'];
 
